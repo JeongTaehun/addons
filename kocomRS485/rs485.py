@@ -21,7 +21,7 @@ from collections import OrderedDict
 # Version
 SW_VERSION = 'RS485 Compilation 1.0.3b'
 # Log Level
-CONF_LOGLEVEL = 'info' # debug, info, warn
+CONF_LOGLEVEL = 'debug' # debug, info, warn
 
 ###############################################################################################################
 ################################################## K O C O M ##################################################
@@ -868,8 +868,8 @@ class Kocom(rs485):
                 logger.debug('[{} {}]{}({}) {}({}) -> {}({})'.format(from_to, name, v['type'], v['command'], v['src_device'], v['src_room'], v['dst_device'], v['dst_room']))
             else:
                 logger.debug('[{} {}]{}({}) {}({}) -> {}({}) = {}'.format(from_to, name, v['type'], v['command'], v['src_device'], v['src_room'], v['dst_device'], v['dst_room'], v['value']))
-
-            if (v['type'] == 'ack' and v['dst_device'] == DEVICE_WALLPAD) or (v['type'] == 'send' and v['dst_device'] == DEVICE_ELEVATOR):
+            
+            if (v['type'] == 'ack' and v['src_device'] == DEVICE_THERMOSTAT) or (v['type'] == 'send' and v['dst_device'] == DEVICE_ELEVATOR):
                 if v['type'] == 'send' and v['dst_device'] == DEVICE_ELEVATOR:
                     self.set_list(v['dst_device'], DEVICE_WALLPAD, v['value'])
                     self.send_to_homeassistant(v['dst_device'], DEVICE_WALLPAD, v['value'])
@@ -992,6 +992,16 @@ class Kocom(rs485):
             logger.debug('[To {}]{}({}) {}({}) -> {}({}) = {}'.format(self._name, v['type'], v['command'], v['src_device'], v['src_room'], v['dst_device'], v['dst_room'], v['value']))
         if device == DEVICE_ELEVATOR:
             self.send_to_homeassistant(DEVICE_ELEVATOR, DEVICE_WALLPAD, 'on')
+        if device == DEVICE_FAN:
+            if v['command'] == '상태' and v['value'] == '0001000000000000':
+                packet = 'AAE10120020201006B55AA01E12082020100EB55'
+                logger.debug('fan OFF packet = {}'.format(packet))
+            elif v['command'] == '상태' and v['value'] == '1100800000000000':
+                packet = 'AAE10120020202036B55AA01E12082020203EB55'
+                logger.debug('fan ON packet = {}'.format(packet))
+            else :
+                logger.debug('Value = {}'.format(v['value']))
+                logger.debug('fan STATUS packet = {}'.format(packet))
         self.write(packet)
 
     def make_packet(self, device, room, cmd, target, value):
