@@ -174,7 +174,7 @@ class Wallpad:
             payload = device.get_command_payload_byte(topic_split[3], msg.payload.decode())
             client.publish(ROOT_TOPIC_NAME + '/dev/command', payload, qos = 2, retain = False)
 
-    def on_disconnect(self, client, userdata, rc, properties=None, *args, **kwargs):
+    def on_disconnect(self, client, userdata, rc):
         raise ConnectionError
 
 wallpad = Wallpad()
