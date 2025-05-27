@@ -5,6 +5,7 @@ from functools import reduce
 from collections import defaultdict
 import json
 
+
 def load_config(path="config.json"):
     with open(path, "r") as f:
         config = json.load(f)
@@ -24,9 +25,6 @@ MQTT_PASSWORD = MQTT_CONF.get("password", "")
 MQTT_SERVER   = MQTT_CONF.get("server")
 MQTT_PORT     = MQTT_CONF.get("port", 1883)
 
-ROOT_TOPIC_NAME = TOPIC_CONF.get("root", "rs485_mqtt")
-HOMEASSISTANT_ROOT_TOPIC_NAME = TOPIC_CONF.get("ha_root", "homeassistant
-MQTT_PORT = MQTT_CONF.get("port", 1883)
 ROOT_TOPIC_NAME = TOPIC_CONF.get("root", "rs485_mqtt")
 HOMEASSISTANT_ROOT_TOPIC_NAME = TOPIC_CONF.get("ha_root", "homeassistant")
 
