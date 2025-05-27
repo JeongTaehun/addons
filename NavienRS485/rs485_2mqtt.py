@@ -5,12 +5,22 @@ from functools import reduce
 from collections import defaultdict
 import json
 
-MQTT_USERNAME = 'taehun.jeong'
-MQTT_PASSWORD = 'Xognsdlahs1!'
-MQTT_SERVER = '192.168.0.252'
-MQTT_PORT = 1883
-ROOT_TOPIC_NAME = 'rs485_mqtt'
-HOMEASSISTANT_ROOT_TOPIC_NAME = 'homeassistant'
+def load_config(config_path="config.json"):
+    with open(config_path, "r") as f:
+        config = json.load(f)
+    return config
+
+# --- config에서 읽어서 자동 할당 ---
+CONFIG = load_config()
+MQTT_CONF = CONFIG["MQTT"]
+TOPIC_CONF = CONFIG["TOPIC"]
+
+MQTT_USERNAME = MQTT_CONF["username"]
+MQTT_PASSWORD = MQTT_CONF["password"]
+MQTT_SERVER = MQTT_CONF["server"]
+MQTT_PORT = MQTT_CONF.get("port", 1883)
+ROOT_TOPIC_NAME = TOPIC_CONF.get("root", "rs485_mqtt")
+HOMEASSISTANT_ROOT_TOPIC_NAME = TOPIC_CONF.get("ha_root", "homeassistant")
 
 class Device:
     def __init__(self, device_name, device_id, device_subid, device_class, child_devices, mqtt_discovery, optional_info):
