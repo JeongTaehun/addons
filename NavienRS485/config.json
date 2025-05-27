@@ -10,8 +10,8 @@
     "MQTT": {
       "server": "192.168.0.252",
       "port": 1883,
-      "username": "",
-      "password": ""
+      "username": "taehun.jeong",
+      "password": "Xognsdlahs1!"
     },
     "TOPIC": {
       "root": "rs485_mqtt",
