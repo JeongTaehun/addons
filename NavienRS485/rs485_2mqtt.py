@@ -5,19 +5,27 @@ from functools import reduce
 from collections import defaultdict
 import json
 
-def load_config(config_path="config.json"):
-    with open(config_path, "r") as f:
+def load_config(path="config.json"):
+    with open(path, "r") as f:
         config = json.load(f)
-    return config
+    # config["options"]에서 MQTT, TOPIC 추출
+    options = config.get("options", {})
+    if not options:
+        raise KeyError("'options' 키가 없습니다. config.json 구조를 확인하세요!")
+    return options
 
-# --- config에서 읽어서 자동 할당 ---
-CONFIG = load_config()
-MQTT_CONF = CONFIG["MQTT"]
-TOPIC_CONF = CONFIG["TOPIC"]
+options = load_config()  # options만 반환
 
-MQTT_USERNAME = MQTT_CONF["username"]
-MQTT_PASSWORD = MQTT_CONF["password"]
-MQTT_SERVER = MQTT_CONF["server"]
+MQTT_CONF = options["MQTT"]
+TOPIC_CONF = options["TOPIC"]
+
+MQTT_USERNAME = MQTT_CONF.get("username", "")
+MQTT_PASSWORD = MQTT_CONF.get("password", "")
+MQTT_SERVER   = MQTT_CONF.get("server")
+MQTT_PORT     = MQTT_CONF.get("port", 1883)
+
+ROOT_TOPIC_NAME = TOPIC_CONF.get("root", "rs485_mqtt")
+HOMEASSISTANT_ROOT_TOPIC_NAME = TOPIC_CONF.get("ha_root", "homeassistant
 MQTT_PORT = MQTT_CONF.get("port", 1883)
 ROOT_TOPIC_NAME = TOPIC_CONF.get("root", "rs485_mqtt")
 HOMEASSISTANT_ROOT_TOPIC_NAME = TOPIC_CONF.get("ha_root", "homeassistant")
